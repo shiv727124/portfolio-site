@@ -1,13 +1,14 @@
-FROM python:3.11
+FROM nginx:alpine
 
-RUN mkdir /usr/src/app
+WORKDIR /usr/share/nginx/html
 
-COPY . /usr/src/app
+RUN rm -rf ./*
 
-WORKDIR /usr/src/app
+RUN apk add --no-cache git && \
+    git clone https://github.com/shiv727124/portfolio-site.git /temp-repo && \
+    cp -r /temp-repo/* . && \
+    rm -rf /temp-repo
 
-RUN pip install -r requirements.txt
+EXPOSE 80
 
-EXPOSE 8080
-
-CMD ["python", "main.py"]
+CMD ["nginx", "-g", "daemon off;"]
